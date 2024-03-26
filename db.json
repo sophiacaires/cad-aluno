@@ -1,0 +1,29 @@
+{
+  "students": [
+    {
+      "id": 1,
+      "name": "Sophia Caires",
+      "course": "ADS"
+    },
+    {
+      "id": 2,
+      "name": "Ellen Cristina",
+      "course": "GTI"
+    },
+    {
+      "id": 3,
+      "name": "Mateus Souza",
+      "course": "GE"
+    },
+    {
+      "id": "1",
+      "name": "1",
+      "course": "1"
+    },
+    {
+      "id": "4",
+      "name": "1",
+      "course": "1"
+    }
+  ]
+}
