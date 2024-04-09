@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Student } from '../student';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { StudentService } from '../student.service';
 
 @Component({
@@ -12,12 +12,13 @@ export class StudentsComponent implements OnInit {
   students: Student[] = [];
   formGroupStudents: FormGroup;
   isEditing: boolean = false;
+  submitted: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private service: StudentService) {
     this.formGroupStudents = formBuilder.group({
       id: [''],
-      name: [''],
-      course: ['']
+      name: ['', [Validators.minLength(3), Validators.required]],
+      course: ['', [Validators.required]]
     });
   }
 
@@ -32,19 +33,26 @@ export class StudentsComponent implements OnInit {
   }
 
   save() {
-    if (this.isEditing) {
-      this.service.update(this.formGroupStudents.value).subscribe({
-        next: () => {
-          this.loadStudents()
-          this.isEditing = false
-        }
-      })
-    } else {
-      this.service.save(this.formGroupStudents.value).subscribe({
-        next: data => this.students.push(data)
-      })
+    this.submitted = true;
+    if (this.formGroupStudents.valid) {
+      if (this.isEditing) {
+        this.service.update(this.formGroupStudents.value).subscribe({
+          next: () => {
+            this.loadStudents()
+            this.isEditing = false
+            this.submitted = true;
+          }
+        })
+      } else {
+        this.service.save(this.formGroupStudents.value).subscribe({
+          next: data => {
+            this.students.push(data)
+            this.submitted = true;
+          }
+        })
+      }
+      this.formGroupStudents.reset()
     }
-    this.formGroupStudents.reset()
   }
 
   delete(student: Student) {
@@ -56,5 +64,13 @@ export class StudentsComponent implements OnInit {
   edit(student: Student) {
     this.formGroupStudents.setValue(student);
     this.isEditing = true;
+  }
+
+  get name(): any {
+    return this.formGroupStudents.get("name")
+  }
+
+  get course(): any {
+    return this.formGroupStudents.get("course")
   }
 }
